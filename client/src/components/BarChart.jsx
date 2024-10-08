@@ -1,23 +1,49 @@
 import React from 'react';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const BarChart = ({ priceRanges }) => {
+  const labels = priceRanges.map((range) => range.range);
+  const data = priceRanges.map((range) => range.count); 
+
+  const chartData = {
+    labels: labels,
+    datasets: [
+      {
+        label: 'Number of Transactions',
+        data: data,
+        backgroundColor: '#1E3A8A',
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Transactions by Price Range',
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+
   return (
-    <div className="p-4">
-      <h2 className="text-lg font-bold mb-4">Price Range Distribution</h2>
-      <div className="space-y-2">
-        {priceRanges.map((range, idx) => (
-          <div key={idx} className="flex items-center justify-between">
-            <span>{range.range}</span>
-            <div className="w-full h-4 bg-gray-200 ml-4">
-              <div
-                style={{ width: `${range.count * 10}px` }}
-                className="h-full bg-blue-600"
-              ></div>
-            </div>
-            <span className="ml-2">{range.count}</span>
-          </div>
-        ))}
-      </div>
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      <Bar data={chartData} options={options} />
     </div>
   );
 };
